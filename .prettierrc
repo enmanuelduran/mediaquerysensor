@@ -1,0 +1,16 @@
+{
+    "tabWidth": 4,
+    "singleQuote": true,
+    "trailing-comma": "all",
+    "jsxBracketSameLine": true,
+    "printWidth": 80,
+    "overrides": [
+        {
+            "files": "*.scss",
+            "options": {
+                "singleQuote": false,
+                "printWidth": 80
+            }
+        }
+    ]
+}
