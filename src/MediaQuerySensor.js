@@ -1,64 +1,51 @@
-class MediaQuerySensor {
-    static get UNAVAILABLE_MSG() {
-        return `MediaQuerySensor is not supported on this browser.`;
-    }
+import * as msg from './constants/Messages';
 
-    static get NO_BREAKPOINTS_MSG() {
-        return `No valid breakpoints were passed to MediaQuerySensor.`;
-    }
-
-    _checkValidations(breakpoints) {
-        if (!this._window.matchMedia) {
-            this._window.console.warning(MediaQuerySensor.UNAVAILABLE_MSG);
+const MediaQuerySensor = ({ value, action }, _window = window) => {
+    const _checkValidations = () => {
+        if (!_window.matchMedia) {
+            _window.console.warning(msg.UNAVAILABLE);
 
             return false;
         }
 
-        if (!Array.isArray(breakpoints) || !breakpoints.length) {
-            this._window.console.info(MediaQuerySensor.NO_BREAKPOINTS_MSG);
+        if (!action || typeof action !== 'function') {
+            _window.console.info(msg.INVALID_ACTION);
+
+            return false;
+        }
+
+        if (!value || typeof value !== 'string') {
+            _window.console.info(msg.INVALID_VALUE);
 
             return false;
         }
 
         return true;
-    }
+    };
 
-    _mediaChangeHandler(mediaQuery, action) {
-        return () => {
-            if (mediaQuery.matches) {
-                action();
-            }
-        };
-    }
+    const _mediaChangeHandler = mediaQuery => () => {
+        if (mediaQuery.matches) {
+            action();
+        }
+    };
 
-    _bindMediaQueries(breakpoints) {
-        breakpoints.forEach(({ value, action }) => {
-            if (
-                !value ||
-                !action ||
-                typeof value !== 'string' ||
-                typeof action !== 'function'
-            ) {
-                return false;
-            }
+    const _bindMediaQueries = () => {
+        const mediaQuery = _window.matchMedia(value);
+        const onMediaChange = _mediaChangeHandler(mediaQuery);
 
-            const mediaQuery = this._window.matchMedia(value);
-            const onMediaChange = this._mediaChangeHandler(mediaQuery, action);
+        mediaQuery.addListener(onMediaChange);
+        onMediaChange();
+    };
 
-            mediaQuery.addListener(onMediaChange);
-            onMediaChange();
-        });
-    }
-
-    init(breakpoints, _window = window) {
-        this._window = _window;
-
-        if (!this._checkValidations(breakpoints)) {
+    const _init = () => {
+        if (!_checkValidations()) {
             return false;
         }
 
-        this._bindMediaQueries(breakpoints);
-    }
-}
+        _bindMediaQueries();
+    };
+
+    _init();
+};
 
 export default MediaQuerySensor;
