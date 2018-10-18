@@ -1,12 +1,12 @@
 {
     "name": "mediaquerysensor",
-    "version": "1.0.1",
-    "description": "A lightweight and performant event wrapper for media queries.",
-    "main": "lib/MediaQuerySensor.js",
+    "version": "1.0.3",
+    "description": "A lightweight and performant wrapper to execute functions based on specified media queries.",
+    "main": "dist/mediaquerysensor.min.js",
     "scripts": {
-        "build": "node_modules/babel-cli/bin/babel.js src --out-dir lib",
-        "test": "babel-node spec/run.js",
-        "prepublish": "npm run build"
+        "build": "webpack",
+        "test": "jest",
+        "prepublish": "yarn build"
     },
     "repository": {
         "type": "git",
@@ -14,13 +14,18 @@
     },
     "keywords": [
         "media",
+        "query",
+        "sensor",
         "size",
         "screen",
+        "actions",
+        "function",
         "handler",
         "event",
         "broadcaster",
         "simple",
-        "lightweight"
+        "lightweight",
+        "performant"
     ],
     "author": "Enmanuel Durán",
     "license": "MIT",
@@ -29,10 +34,18 @@
     },
     "homepage": "https://github.com/enmanuelduran/mediaquerysensor#readme",
     "devDependencies": {
-        "babel-cli": "^6.26.0",
-        "babel-core": "^6.26.3",
-        "babel-plugin-transform-object-rest-spread": "^6.26.0",
-        "babel-preset-es2015": "^6.24.1",
-        "jasmine": "^3.2.0"
+        "@babel/core": "^7.1.2",
+        "@babel/preset-env": "^7.1.0",
+        "babel-jest": "^23.6.0",
+        "babel-loader": "^8.0.4",
+        "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+        "jest": "^23.6.0",
+        "webpack": "^4.20.2",
+        "webpack-cli": "^3.1.2"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.js$": "babel-jest"
+        }
     }
 }
