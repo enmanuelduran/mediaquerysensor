@@ -1,4 +1,5 @@
-# MediaQuerySensor
+# MediaQuerySensor &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/enmanuelduran/mediaquerysensor/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/mediaquerysensor.svg?style=flat)](https://www.npmjs.com/package/mediaquerysensor) [![Coverage Status](https://coveralls.io/repos/github/enmanuelduran/mediaquerysensor/badge.svg?branch=master)](https://coveralls.io/github/enmanuelduran/mediaquerysensor?branch=master) [![CircleCI](https://circleci.com/gh/enmanuelduran/mediaquerysensor.svg?style=svg)](https://circleci.com/gh/enmanuelduran/mediaquerysensor)
+
 
 _MediaQuerySensor_ (MQS) is a very simple and powerful event wrapper that allows you to perform _actions_ based on _media queries_ specified by you.
 
@@ -15,7 +16,7 @@ You can install it with the package manager of your preference.
 Include it directly in the browser with a CDN:
 
 ```
-https://cdn.jsdelivr.net/npm/mediaquerysensor@1.0.2/src/MediaQuerySensor.js
+https://cdn.jsdelivr.net/npm/mediaquerysensor@1.0.3/dist/mediaquerysensor.min.js
 ```
 
 ## Usage
