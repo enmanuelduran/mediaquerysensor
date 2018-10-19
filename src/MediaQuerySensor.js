@@ -1,21 +1,27 @@
 import * as msg from './constants/Messages';
 
-const MediaQuerySensor = ({ value, action }, _window = window) => {
-    const _checkValidations = () => {
-        if (!_window.matchMedia) {
-            _window.console.warning(msg.UNAVAILABLE);
+function MediaQuerySensor(data = {}) {
+    const _validateInsertion = (value, action, ref) => {
+        if (!window.matchMedia) {
+            console.warn(msg.UNAVAILABLE);
 
             return false;
         }
 
         if (!action || typeof action !== 'function') {
-            _window.console.info(msg.INVALID_ACTION);
+            console.warn(msg.INVALID_ACTION);
 
             return false;
         }
 
         if (!value || typeof value !== 'string') {
-            _window.console.info(msg.INVALID_VALUE);
+            console.warn(msg.INVALID_VALUE);
+
+            return false;
+        }
+
+        if (data[ref]) {
+            console.warn(msg.INVALID_REF);
 
             return false;
         }
@@ -23,29 +29,63 @@ const MediaQuerySensor = ({ value, action }, _window = window) => {
         return true;
     };
 
-    const _mediaChangeHandler = mediaQuery => () => {
-        if (mediaQuery.matches) {
+    const _mediaChangeHandler = (mediaQueryList, action) => () => {
+        if (mediaQueryList.matches) {
             action();
         }
     };
 
-    const _bindMediaQueries = () => {
-        const mediaQuery = _window.matchMedia(value);
-        const onMediaChange = _mediaChangeHandler(mediaQuery);
-
-        mediaQuery.addListener(onMediaChange);
-        onMediaChange();
+    const _bindMediaQueries = (mediaQueryList, ref) => {
+        mediaQueryList.addListener(data[ref].bindedAction);
+        data[ref].bindedAction();
     };
 
-    const _init = () => {
-        if (!_checkValidations()) {
+    const add = ({ value, action, ref }) => {
+        if (!_validateInsertion(value, action, ref)) {
             return false;
         }
 
-        _bindMediaQueries();
+        const mediaQueryList = window.matchMedia(value);
+
+        data[ref] = {
+            value,
+            action,
+            mediaQueryList,
+            bindedAction: _mediaChangeHandler(mediaQueryList, action)
+        };
+
+        _bindMediaQueries(mediaQueryList, ref);
     };
 
-    _init();
-};
+    const remove = ref => {
+        if (!(ref in data)) {
+            console.warn(msg.REF_NOT_FOUND);
 
-export default MediaQuerySensor;
+            return false;
+        }
+
+        data[ref].mediaQueryList.removeListener(data[ref].bindedAction);
+
+        const { [ref]: undefined, ...newData } = data;
+        data = newData;
+    };
+
+    const empty = () => {
+        Object.keys(data).forEach(elm => {
+            data[elm].mediaQueryList.removeListener(data[elm].bindedAction);
+        });
+
+        data = {};
+    };
+
+    const get = () => Object.freeze({ ...data });
+
+    return Object.freeze({
+        add,
+        empty,
+        get,
+        remove
+    });
+}
+
+export default MediaQuerySensor();

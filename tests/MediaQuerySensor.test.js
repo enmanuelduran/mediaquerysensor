@@ -1,143 +1,249 @@
 import * as msg from '../src/constants/Messages';
 import MQS from '../src/MediaQuerySensor';
 
-const mockWindow = {
-    console: {
-        info: jasmine.createSpy(),
-        warning: jasmine.createSpy()
-    }
-};
-
-describe('When initializing', () => {
-    const mediaQueries = {
-        value: '(min-width: 600px)',
-        action: jasmine.createSpy()
-    };
-
-    it('should not initialize if matchMedia object is not available', () => {
-        MQS(mediaQueries, mockWindow);
-
-        expect(mockWindow.console.warning).toHaveBeenCalledWith(
-            msg.UNAVAILABLE
-        );
+describe('When processing the media query objects', () => {
+    beforeEach(() => {
+        global.console = { warn: jest.fn(), log: console.log };
     });
 
-    describe('when matchMedia is defined', () => {
-        const fullWindowMock = {
-            ...mockWindow,
-            matchMedia: () => {}
-        };
-
-        it('should not process invalid values', () => {
-            spyOn(fullWindowMock, 'matchMedia').and.returnValue({
-                addListener: jasmine.createSpy()
-            });
-
-            MQS({ value: '', action: () => {} }, fullWindowMock);
-            MQS({ value: {}, action: () => {} }, fullWindowMock);
-
-            expect(fullWindowMock.matchMedia).not.toHaveBeenCalled();
-            expect(
-                fullWindowMock.matchMedia().addListener
-            ).not.toHaveBeenCalled();
-        });
-
-        it('should not process invalid actions', () => {
-            const mediaQueries = [
-                {
-                    value: '(min-width: 991px) and (max-width: 1199px)',
-                    action: undefined
-                },
-                {
-                    value: '(min-width: 991px) and (max-width: 1199px)',
-                    action: {}
-                }
-            ];
-
-            spyOn(fullWindowMock, 'matchMedia').and.returnValue({
-                addListener: jasmine.createSpy()
-            });
-
-            MQS(mediaQueries[0], fullWindowMock);
-            MQS(mediaQueries[1], fullWindowMock);
-
-            expect(fullWindowMock.matchMedia).not.toHaveBeenCalled();
-            expect(
-                fullWindowMock.matchMedia().addListener
-            ).not.toHaveBeenCalled();
-        });
+    afterEach(() => {
+        MQS.empty();
+        jest.clearAllMocks();
     });
-});
 
-describe('when processing the breakpoints passed', () => {
-    const fullWindowMock = {
-        ...mockWindow,
-        matchMedia: () => {}
-    };
+    describe('when getting the objects available', () => {
+        beforeEach(() => {
+            global.matchMedia = jest.fn().mockReturnValue({
+                addListener: jest.fn(),
+                removeListener: jest.fn(),
+                matches: true
+            });
+        });
 
-    it('should process N valid objects', () => {
         const mediaQueries = [
             {
-                value: '(min-width: 991px) and (max-width: 1199px)',
-                action: () => {}
+                value: '(min-width: 600px)',
+                action: jest.fn(),
+                ref: 'ref'
             },
             {
-                value: '(min-width: 480px)',
-                action: () => {}
+                value: '(max-width: 599px)',
+                action: jest.fn(),
+                ref: 'ref2'
             }
         ];
 
-        spyOn(fullWindowMock, 'matchMedia').and.returnValue({
-            addListener: jasmine.createSpy()
+        it('should return an empty object if there are none', () => {
+            expect(MQS.get()).toEqual({});
         });
 
-        MQS(mediaQueries[0], fullWindowMock);
-        MQS(mediaQueries[1], fullWindowMock);
+        it('should return an object with correct elements and update', () => {
+            MQS.add(mediaQueries[0]);
 
-        expect(fullWindowMock.matchMedia).toHaveBeenCalledWith(
-            mediaQueries[0].value
-        );
-        expect(fullWindowMock.matchMedia).toHaveBeenCalledWith(
-            mediaQueries[1].value
-        );
-        expect(fullWindowMock.matchMedia().addListener).toHaveBeenCalledTimes(
-            2
-        );
+            expect(MQS.get()['ref']).toBeDefined();
+
+            MQS.add(mediaQueries[1]);
+
+            expect(MQS.get()['ref']).toBeDefined();
+            expect(MQS.get()['ref2']).toBeDefined();
+        });
     });
 
-    it('should execute the actions that currently match the view port', () => {
-        const mediaQueries = [
-            {
-                value: '(min-width: 991px) and (max-width: 1199px)',
-                action: jasmine.createSpy()
-            }
-        ];
+    describe('When adding new elements', () => {
+        const mediaQueries = {
+            value: '(min-width: 600px)',
+            action: jest.fn(),
+            ref: 'ref'
+        };
 
-        spyOn(fullWindowMock, 'matchMedia').and.returnValue({
-            addListener: callback => callback(),
-            matches: true
+        it('should not add elements if matchMedia object is not defined', () => {
+            global.matchMedia = undefined;
+
+            expect(MQS.add(mediaQueries)).toBe(false);
+
+            expect(global.console.warn).toHaveBeenCalledWith(msg.UNAVAILABLE);
         });
 
-        MQS(mediaQueries[0], fullWindowMock);
+        describe('when matchMedia is defined', () => {
+            beforeEach(() => {
+                global.matchMedia = jest.fn().mockReturnValue({
+                    addListener: jest.fn(),
+                    removeListener: jest.fn(),
+                    matches: false
+                });
+            });
 
-        expect(mediaQueries[0].action).toHaveBeenCalledTimes(2);
+            it('should not process invalid values', () => {
+                expect(
+                    MQS.add({ value: '', action: () => {}, ref: 'ref' })
+                ).toBe(false);
+                expect(
+                    MQS.add({ value: {}, action: () => {}, ref: 'ref2' })
+                ).toBe(false);
+
+                expect(global.matchMedia).not.toHaveBeenCalled();
+                expect(global.matchMedia().addListener).not.toHaveBeenCalled();
+                expect(global.console.warn).toHaveBeenCalledWith(
+                    msg.INVALID_VALUE
+                );
+            });
+
+            it('should not process invalid actions', () => {
+                const mediaQueries = [
+                    {
+                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        action: undefined,
+                        ref: 'ref'
+                    },
+                    {
+                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        action: {},
+                        ref: 'ref2'
+                    }
+                ];
+
+                expect(MQS.add(mediaQueries[0])).toBe(false);
+                expect(MQS.add(mediaQueries[1])).toBe(false);
+
+                expect(global.matchMedia).not.toHaveBeenCalled();
+                expect(global.matchMedia().addListener).not.toHaveBeenCalled();
+                expect(global.console.warn).toHaveBeenCalledWith(
+                    msg.INVALID_ACTION
+                );
+            });
+
+            it('should not process invalid refs', () => {
+                const mediaQueries = [
+                    {
+                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        action: () => {},
+                        ref: 'ref'
+                    },
+                    {
+                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        action: () => {},
+                        ref: 'ref'
+                    }
+                ];
+
+                expect(MQS.add(mediaQueries[0])).toBe(undefined);
+                expect(MQS.add(mediaQueries[1])).toBe(false);
+
+                expect(global.matchMedia).toHaveBeenCalledTimes(1);
+                expect(global.matchMedia().addListener).toHaveBeenCalledTimes(
+                    1
+                );
+                expect(global.console.warn).toHaveBeenCalledWith(
+                    msg.INVALID_REF
+                );
+            });
+
+            it("should add new objects if they're valid", () => {
+                MQS.add(mediaQueries);
+
+                expect(MQS.get()['ref'].value).toBe(mediaQueries.value);
+                expect(MQS.get()['ref'].action).toEqual(mediaQueries.action);
+                expect(MQS.get()['ref'].bindedAction).toEqual(
+                    expect.any(Function)
+                );
+                expect(MQS.get()['ref'].mediaQueryList).toEqual({
+                    addListener: expect.any(Function),
+                    removeListener: expect.any(Function),
+                    matches: false
+                });
+            });
+
+            it('should add the listener to the valid object', () => {
+                MQS.add(mediaQueries);
+
+                expect(global.matchMedia).toHaveBeenCalledWith(
+                    mediaQueries.value
+                );
+                expect(global.matchMedia().addListener).toHaveBeenCalledWith(
+                    MQS.get()['ref'].bindedAction
+                );
+            });
+
+            it('should not execute the action if the current screen size does not match', () => {
+                MQS.add(mediaQueries);
+
+                expect(mediaQueries.action).not.toHaveBeenCalled();
+            });
+
+            it('should execute the action if the current screen size matches', () => {
+                global.matchMedia = jest.fn().mockReturnValue({
+                    addListener: jest.fn(),
+                    removeListener: jest.fn(),
+                    matches: true
+                });
+
+                MQS.add(mediaQueries);
+
+                expect(mediaQueries.action).toHaveBeenCalled();
+            });
+        });
     });
 
-    it('should not execute the actions that does not match the view port', () => {
+    describe('When removing media queries', () => {
         const mediaQueries = [
             {
-                value: '(min-width: 991px) and (max-width: 1199px)',
-                action: jasmine.createSpy()
+                value: '(min-width: 600px)',
+                action: jest.fn(),
+                ref: 'ref'
+            },
+            {
+                value: '(max-width: 599px)',
+                action: jest.fn(),
+                ref: 'ref2'
             }
         ];
 
-        spyOn(fullWindowMock, 'matchMedia').and.returnValue({
-            addListener: callback => callback(),
-            matches: false
+        it('should not remove anything if the ref does not exist', () => {
+            expect(MQS.remove('ref')).toBe(false);
+
+            expect(console.warn).toHaveBeenCalledWith(msg.REF_NOT_FOUND);
         });
 
-        MQS(mediaQueries[0], fullWindowMock);
+        it('should remove elements correctly when the ref exist', () => {
+            MQS.add(mediaQueries[0]);
+            MQS.add(mediaQueries[1]);
 
-        expect(mediaQueries[0].action).not.toHaveBeenCalled();
+            const bindedAction = MQS.get()['ref'].bindedAction;
+
+            expect(MQS.get()['ref']).toBeDefined();
+            expect(MQS.get()['ref2']).toBeDefined();
+
+            MQS.remove('ref');
+
+            expect(console.warn).not.toHaveBeenCalled();
+            expect(MQS.get()['ref']).not.toBeDefined();
+            expect(MQS.get()['ref2']).toBeDefined();
+            expect(global.matchMedia().removeListener).toHaveBeenCalledTimes(1);
+            expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
+                bindedAction
+            );
+        });
+
+        it('should be able to remove all the listeners and media queries programatically', () => {
+            MQS.add(mediaQueries[0]);
+            MQS.add(mediaQueries[1]);
+
+            expect(MQS.get()['ref']).toBeDefined();
+            expect(MQS.get()['ref2']).toBeDefined();
+
+            const bindedAction = MQS.get()['ref'].bindedAction;
+            const bindedActionRef2 = MQS.get()['ref2'].bindedAction;
+
+            MQS.empty();
+
+            expect(global.matchMedia().removeListener).toHaveBeenCalledTimes(2);
+            expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
+                bindedAction
+            );
+            expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
+                bindedActionRef2
+            );
+            expect(MQS.get()).toEqual({});
+        });
     });
 });
