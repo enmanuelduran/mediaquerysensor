@@ -1,6 +1,6 @@
 {
     "name": "mediaquerysensor",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "A lightweight and performant wrapper to execute functions based on specified media queries.",
     "main": "dist/mediaquerysensor.min.js",
     "scripts": {
