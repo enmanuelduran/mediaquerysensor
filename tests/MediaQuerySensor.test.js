@@ -22,12 +22,12 @@ describe('When processing the media query objects', () => {
 
         const mediaQueries = [
             {
-                value: '(min-width: 600px)',
+                mediaQuery: '(min-width: 600px)',
                 action: jest.fn(),
                 ref: 'ref'
             },
             {
-                value: '(max-width: 599px)',
+                mediaQuery: '(max-width: 599px)',
                 action: jest.fn(),
                 ref: 'ref2'
             }
@@ -51,7 +51,7 @@ describe('When processing the media query objects', () => {
 
     describe('When adding new elements', () => {
         const mediaQueries = {
-            value: '(min-width: 600px)',
+            mediaQuery: '(min-width: 600px)',
             action: jest.fn(),
             ref: 'ref'
         };
@@ -75,28 +75,30 @@ describe('When processing the media query objects', () => {
 
             it('should not process invalid values', () => {
                 expect(
-                    MQS.add({ value: '', action: () => {}, ref: 'ref' })
+                    MQS.add({ mediaQuery: '', action: () => {}, ref: 'ref' })
                 ).toBe(false);
                 expect(
-                    MQS.add({ value: {}, action: () => {}, ref: 'ref2' })
+                    MQS.add({ mediaQuery: {}, action: () => {}, ref: 'ref2' })
                 ).toBe(false);
 
                 expect(global.matchMedia).not.toHaveBeenCalled();
                 expect(global.matchMedia().addListener).not.toHaveBeenCalled();
                 expect(global.console.warn).toHaveBeenCalledWith(
-                    msg.INVALID_VALUE
+                    msg.INVALID_MEDIAQUERY
                 );
             });
 
             it('should not process invalid actions', () => {
                 const mediaQueries = [
                     {
-                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        mediaQuery:
+                            '(min-width: 991px) and (max-width: 1199px)',
                         action: undefined,
                         ref: 'ref'
                     },
                     {
-                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        mediaQuery:
+                            '(min-width: 991px) and (max-width: 1199px)',
                         action: {},
                         ref: 'ref2'
                     }
@@ -115,19 +117,27 @@ describe('When processing the media query objects', () => {
             it('should not process invalid refs', () => {
                 const mediaQueries = [
                     {
-                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        mediaQuery:
+                            '(min-width: 991px) and (max-width: 1199px)',
                         action: () => {},
                         ref: 'ref'
                     },
                     {
-                        value: '(min-width: 991px) and (max-width: 1199px)',
+                        mediaQuery:
+                            '(min-width: 991px) and (max-width: 1199px)',
                         action: () => {},
                         ref: 'ref'
+                    },
+                    {
+                        mediaQuery:
+                            '(min-width: 991px) and (max-width: 1199px)',
+                        action: () => {}
                     }
                 ];
 
                 expect(MQS.add(mediaQueries[0])).toBe(undefined);
                 expect(MQS.add(mediaQueries[1])).toBe(false);
+                expect(MQS.add(mediaQueries[2])).toBe(false);
 
                 expect(global.matchMedia).toHaveBeenCalledTimes(1);
                 expect(global.matchMedia().addListener).toHaveBeenCalledTimes(
@@ -141,7 +151,9 @@ describe('When processing the media query objects', () => {
             it("should add new objects if they're valid", () => {
                 MQS.add(mediaQueries);
 
-                expect(MQS.get()['ref'].value).toBe(mediaQueries.value);
+                expect(MQS.get()['ref'].mediaQuery).toBe(
+                    mediaQueries.mediaQuery
+                );
                 expect(MQS.get()['ref'].action).toEqual(mediaQueries.action);
                 expect(MQS.get()['ref'].bindedAction).toEqual(
                     expect.any(Function)
@@ -157,7 +169,7 @@ describe('When processing the media query objects', () => {
                 MQS.add(mediaQueries);
 
                 expect(global.matchMedia).toHaveBeenCalledWith(
-                    mediaQueries.value
+                    mediaQueries.mediaQuery
                 );
                 expect(global.matchMedia().addListener).toHaveBeenCalledWith(
                     MQS.get()['ref'].bindedAction
@@ -187,12 +199,12 @@ describe('When processing the media query objects', () => {
     describe('When removing media queries', () => {
         const mediaQueries = [
             {
-                value: '(min-width: 600px)',
+                mediaQuery: '(min-width: 600px)',
                 action: jest.fn(),
                 ref: 'ref'
             },
             {
-                value: '(max-width: 599px)',
+                mediaQuery: '(max-width: 599px)',
                 action: jest.fn(),
                 ref: 'ref2'
             }

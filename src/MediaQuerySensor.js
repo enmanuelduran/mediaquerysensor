@@ -1,7 +1,7 @@
 import * as msg from './constants/Messages';
 
 function MediaQuerySensor(data = {}) {
-    const _validateInsertion = (value, action, ref) => {
+    const _validateInsertion = (mediaQuery, action, ref) => {
         if (!window.matchMedia) {
             console.warn(msg.UNAVAILABLE);
 
@@ -14,13 +14,13 @@ function MediaQuerySensor(data = {}) {
             return false;
         }
 
-        if (!value || typeof value !== 'string') {
-            console.warn(msg.INVALID_VALUE);
+        if (!mediaQuery || typeof mediaQuery !== 'string') {
+            console.warn(msg.INVALID_MEDIAQUERY);
 
             return false;
         }
 
-        if (data[ref]) {
+        if (!ref || data[ref]) {
             console.warn(msg.INVALID_REF);
 
             return false;
@@ -40,15 +40,15 @@ function MediaQuerySensor(data = {}) {
         data[ref].bindedAction();
     };
 
-    const add = ({ value, action, ref }) => {
-        if (!_validateInsertion(value, action, ref)) {
+    const add = ({ mediaQuery, action, ref }) => {
+        if (!_validateInsertion(mediaQuery, action, ref)) {
             return false;
         }
 
-        const mediaQueryList = window.matchMedia(value);
+        const mediaQueryList = window.matchMedia(mediaQuery);
 
         data[ref] = {
-            value,
+            mediaQuery,
             action,
             mediaQueryList,
             bindedAction: _mediaChangeHandler(mediaQueryList, action)
