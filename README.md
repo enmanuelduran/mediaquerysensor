@@ -28,11 +28,11 @@ _MediaQuerySensor exposes the `MQS` API in the window object if you include the 
 
 To add a Sensor or Listener we use the method `MQS.add({ref, mediaQuery, action})`, this method takes an object as argument with the next properties:
 
-| Property   | type                      | Description                                                                                                                                                                         |
-| ---------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ref        | _Object key_              | A valid (UNIQUE) object key (preferably a String) assigned as identifier to each pair (mediaQuery and action) passed to MQS, this will allow us to remove listeners when necessary. |
-| mediaQuery | _String:MediaQueryString_ | MediaQuery in which the action is going to be executed (Usually defined with the same format as CSS Media queries).                                                                 |
-| action     | _Function_                | Function to execute when the media query conditions are fullfilled.                                                                                                                 |
+| Property     | type                      | Description                                                                                                                                                                         |
+| ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ref`        | _Object key_              | A valid (UNIQUE) object key (preferably a String) assigned as identifier to each pair (mediaQuery and action) passed to MQS, this will allow us to remove listeners when necessary. |
+| `mediaQuery` | _String:MediaQueryString_ | MediaQuery in which the action is going to be executed (Usually defined with the same format as CSS Media queries).                                                                 |
+| `action`     | _Function_                | Function to execute when the media query conditions are fullfilled.                                                                                                                 |
 
 #### Example
 
@@ -64,7 +64,7 @@ To remove individual sensors we use the method `MQS.remove(ref)`, this method ta
 
 | argument | type                                    | Description                                      |
 | -------- | --------------------------------------- | ------------------------------------------------ |
-| ref      | _Valid Object key, preferably a string_ | Matching UNIQUE key used when adding the sensor. |
+| `ref`      | _Valid Object key, preferably a string_ | Matching UNIQUE key used when adding the sensor. |
 
 #### Example
 
