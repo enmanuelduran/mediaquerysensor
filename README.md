@@ -88,7 +88,7 @@ MQS.empty();
 
 ### Checking/Getting active sensors
 
-To help you make validations and find problems in your implementations there is also a `MQS.get()` method available that exposes an object with all the active sensor's properties, this object uses the refs as keys so you can easily identify each element you've added. You could also access a sensor directly to see if it is active by executing `MQS.get()['sensorRef']`.
+To help you make validations and find problems in your implementations there is also a `MQS.get()` method available that exposes an object with all the active sensor's properties, you can also get one specific sensor object directly to see if it is active by executing `MQS.get()['sensorRef']`.
 
 #### Example
 
