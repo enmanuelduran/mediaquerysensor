@@ -19,7 +19,7 @@ In today's world to be able to remove and add listeners to media queries you fir
 
 MQS Solves all these problems because:
 
-1. It takes care of creating the `MediaQueryList objects`.
+1. It takes care of creating _the MediaQueryList objects_.
 1. It takes the responsability of binding your objects with your functions through a listener.
 1. It makes the necessary checks to execute your functions when the screen size matches a media query.
 1. It creates accesible references so that you can remove listeners everywhere without having to worry about the context you're currently in.
@@ -65,8 +65,7 @@ import MQS from 'mediaquerysensor';
 
 MQS.add({
     ref: 'yourRef',
-    mediaQuery:
-        '(min-width: 991px) and (min-height: 500px)' /* Your custom media query string */,
+    mediaQuery: '(min-width: 991px) and (min-height: 500px)', // Your Media Query
     action: () => {} /* Your function to execute */
 });
 ```
