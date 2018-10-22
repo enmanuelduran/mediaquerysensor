@@ -36,8 +36,8 @@ function MediaQuerySensor(data = {}) {
     };
 
     const _bindMediaQueries = (mediaQueryList, ref) => {
-        mediaQueryList.addListener(data[ref].bindedAction);
-        data[ref].bindedAction();
+        mediaQueryList.addListener(data[ref].boundAction);
+        data[ref].boundAction();
     };
 
     const add = ({ mediaQuery, action, ref }) => {
@@ -51,7 +51,7 @@ function MediaQuerySensor(data = {}) {
             mediaQuery,
             action,
             mediaQueryList,
-            bindedAction: _mediaChangeHandler(mediaQueryList, action)
+            boundAction: _mediaChangeHandler(mediaQueryList, action)
         };
 
         _bindMediaQueries(mediaQueryList, ref);
@@ -64,7 +64,7 @@ function MediaQuerySensor(data = {}) {
             return false;
         }
 
-        data[ref].mediaQueryList.removeListener(data[ref].bindedAction);
+        data[ref].mediaQueryList.removeListener(data[ref].boundAction);
 
         const { [ref]: undefined, ...newData } = data;
         data = newData;
@@ -72,7 +72,7 @@ function MediaQuerySensor(data = {}) {
 
     const empty = () => {
         Object.keys(data).forEach(elm => {
-            data[elm].mediaQueryList.removeListener(data[elm].bindedAction);
+            data[elm].mediaQueryList.removeListener(data[elm].boundAction);
         });
 
         data = {};

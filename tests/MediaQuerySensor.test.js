@@ -155,7 +155,7 @@ describe('When processing the media query objects', () => {
                     mediaQueries.mediaQuery
                 );
                 expect(MQS.get()['ref'].action).toEqual(mediaQueries.action);
-                expect(MQS.get()['ref'].bindedAction).toEqual(
+                expect(MQS.get()['ref'].boundAction).toEqual(
                     expect.any(Function)
                 );
                 expect(MQS.get()['ref'].mediaQueryList).toEqual({
@@ -172,7 +172,7 @@ describe('When processing the media query objects', () => {
                     mediaQueries.mediaQuery
                 );
                 expect(global.matchMedia().addListener).toHaveBeenCalledWith(
-                    MQS.get()['ref'].bindedAction
+                    MQS.get()['ref'].boundAction
                 );
             });
 
@@ -220,7 +220,7 @@ describe('When processing the media query objects', () => {
             MQS.add(mediaQueries[0]);
             MQS.add(mediaQueries[1]);
 
-            const bindedAction = MQS.get()['ref'].bindedAction;
+            const boundAction = MQS.get()['ref'].boundAction;
 
             expect(MQS.get()['ref']).toBeDefined();
             expect(MQS.get()['ref2']).toBeDefined();
@@ -232,7 +232,7 @@ describe('When processing the media query objects', () => {
             expect(MQS.get()['ref2']).toBeDefined();
             expect(global.matchMedia().removeListener).toHaveBeenCalledTimes(1);
             expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
-                bindedAction
+                boundAction
             );
         });
 
@@ -243,17 +243,17 @@ describe('When processing the media query objects', () => {
             expect(MQS.get()['ref']).toBeDefined();
             expect(MQS.get()['ref2']).toBeDefined();
 
-            const bindedAction = MQS.get()['ref'].bindedAction;
-            const bindedActionRef2 = MQS.get()['ref2'].bindedAction;
+            const boundAction = MQS.get()['ref'].boundAction;
+            const boundActionRef2 = MQS.get()['ref2'].boundAction;
 
             MQS.empty();
 
             expect(global.matchMedia().removeListener).toHaveBeenCalledTimes(2);
             expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
-                bindedAction
+                boundAction
             );
             expect(global.matchMedia().removeListener).toHaveBeenCalledWith(
-                bindedActionRef2
+                boundActionRef2
             );
             expect(MQS.get()).toEqual({});
         });
