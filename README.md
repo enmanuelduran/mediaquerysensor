@@ -17,8 +17,12 @@ Use the package manager of your preference:
 Include it directly in the browser with a CDN:
 
 ```
-https://cdn.jsdelivr.net/npm/mediaquerysensor@1.0.5/dist/mediaquerysensor.min.js
+https://cdn.jsdelivr.net/npm/mediaquerysensor@2.0.0/dist/mediaquerysensor.min.js
 ```
+
+## Demo
+
+A demo is available at https://enmascript.com/code/mediaquerysensor
 
 ## Usage
 
@@ -64,7 +68,7 @@ To remove individual sensors we use the method `MQS.remove(ref)`, this method ta
 
 | argument | type                                    | Description                                      |
 | -------- | --------------------------------------- | ------------------------------------------------ |
-| `ref`      | _Valid Object key, preferably a string_ | Matching UNIQUE key used when adding the sensor. |
+| `ref`    | _Valid Object key, preferably a string_ | Matching UNIQUE key used when adding the sensor. |
 
 #### Example
 
