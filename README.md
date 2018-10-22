@@ -37,7 +37,7 @@ Use the package manager of your preference:
 Include it directly in the browser with a CDN:
 
 ```
-https://cdn.jsdelivr.net/npm/mediaquerysensor@2.0.0/dist/mediaquerysensor.min.js
+https://cdn.jsdelivr.net/npm/mediaquerysensor@2.0.1/dist/mediaquerysensor.min.js
 ```
 
 ## Demo
