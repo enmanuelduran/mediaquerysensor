@@ -135,13 +135,12 @@ MQS receives an object with the properties `ref`, `mediaQuery` and `action` to c
 
 ### What is a Sensor?
 
-A _sensor_ is just an object created by MQS that contains the properties `mediaQuery` and `action` defined, each sensor uses the `ref` value defined by you as identifier. Once a sensor is created, a listener is added to bind your `mediaQuery` with your `action` together so that they can be executed when the screen matches the `mediaQuery` conditions. Also, you'll see that each sensor object contains two extra properties (mostly for debugging purposes):
+A _sensor_ is just an object created by MQS that contains the properties `mediaQuery` and `action` defined, each sensor uses the `ref` value defined by you as identifier. Once a sensor is created, a listener is added to bind your `mediaQuery` with your `action` together so that they can be executed when the screen matches the `mediaQuery` conditions. Also, you'll see that each sensor object contains two extra properties:
 
 | argument         | type                    | Description                                                                                                                              |
 | ---------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `mediaQueryList` | _MediaQueryList Object_ | It's required to use the matchMedia API, this object allows us to add and remove listeners.                                              |
 | `boundAction`    | _Function_              | The final function bound to the `mediaQueryList` listeners, this function contains the validations of when an action should be executed. |
-|                  |
 
 So, if we call the method `add` like:
 
