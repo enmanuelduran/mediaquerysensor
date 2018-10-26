@@ -144,7 +144,7 @@ A _sensor_ is just an object created by MQS that contains the properties `mediaQ
 
 So, if we call the method `add` like:
 
-```
+```javascript
 MQS.add({
     ref: 'refId',
     mediaQuery: '(max-height: 400px)',
@@ -160,7 +160,7 @@ MQS.add({
 
 It will create the following sensor objects:
 
-```
+```javascript
 {
     'refId': {
         mediaQuery: '(max-height: 400px)',
