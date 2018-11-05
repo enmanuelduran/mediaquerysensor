@@ -8,7 +8,7 @@ Instead of adding a listener to the window's `resize` event, MQS creates a wrapp
 
 **The problem:**
 
-In today's world to be able to remove and add listeners to media queries you first need to:
+In today's world to be able to remove and add listeners to media queries you first need to follow some steps:
 
 1. Create a _MediaQueryList object_.
 1. Bind a function to the object created through a listener.
@@ -17,7 +17,7 @@ In today's world to be able to remove and add listeners to media queries you fir
 
 **Solution:**
 
-MQS Solves all these problems because:
+**MQS simplifies your life when working with media query listeners** and also **solves the scoping problem**:
 
 1. It takes care of creating _the MediaQueryList objects_.
 1. It takes the responsability of binding your objects with your functions through a listener.
