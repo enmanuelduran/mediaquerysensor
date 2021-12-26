@@ -56,7 +56,7 @@ To add a Sensor or Listener we use the method `MQS.add({ref, mediaQuery, action}
 | ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ref`        | _Object key_              | A valid (UNIQUE) object key (preferably a String) assigned as identifier to each pair (mediaQuery and action) passed to MQS, this will allow us to remove listeners when necessary. |
 | `mediaQuery` | _String:MediaQueryString_ | MediaQuery in which the action is going to be executed (You can define media queries in the same way as CSS Media queries).                                                         |
-| `action`     | _Function_                | Function to execute when the media query conditions are fullfilled.                                                                                                                 |
+| `action`     | _Function(Boolean)_       | Function to execute when the media query conditions are met, receives a boolean as parameter, `true` if the `mediaQuery` property above is met, `false` otherwise                   |
 
 #### Example
 
@@ -64,21 +64,15 @@ To add a Sensor or Listener we use the method `MQS.add({ref, mediaQuery, action}
 import MQS from 'mediaquerysensor';
 
 MQS.add({
-    ref: 'yourRef',
-    mediaQuery: '(min-width: 991px) and (min-height: 500px)', // Your Media Query
-    action: () => {} /* Your function to execute */
-});
-```
-
-**Another example using a previously defined action:**
-
-```javascript
-const consoleLogger = () => console.log('Between 480px and 990px');
-
-MQS.add({
     ref: 'yourRef2',
     mediaQuery: '(min-width: 480px) and (max-width: 990px)',
-    action: consoleLogger
+    action: (mediaQueryMatches) => {
+        if (mediaQueryMatches) {
+            console.log('Between 480px and 990px');
+        } else {
+            console.log('Not in 480px and 990px');
+        }
+    },
 });
 ```
 
@@ -148,13 +142,13 @@ So, if we call the method `add` like:
 MQS.add({
     ref: 'refId',
     mediaQuery: '(max-height: 400px)',
-    action: () => console.log('maximum of 400px of height'),
+    action: (mediaQueryMatches) => console.log('maximum of 400px of height'),
 });
 
 MQS.add({
     ref: 'refId2',
     mediaQuery: '(min-width: 768px) and (max-width: 990px)',
-    action: () => console.log('768px to 990px'),
+    action: (mediaQueryMatches) => console.log('768px to 990px'),
 });
 ```
 

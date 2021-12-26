@@ -176,10 +176,10 @@ describe('When processing the media query objects', () => {
                 );
             });
 
-            it('should not execute the action if the current screen size does not match', () => {
+            it('should execute the action passing false if the current screen size does not match', () => {
                 MQS.add(mediaQueries);
 
-                expect(mediaQueries.action).not.toHaveBeenCalled();
+                expect(mediaQueries.action).toHaveBeenCalledWith(false);
             });
 
             it('should execute the action if the current screen size matches', () => {
@@ -191,7 +191,7 @@ describe('When processing the media query objects', () => {
 
                 MQS.add(mediaQueries);
 
-                expect(mediaQueries.action).toHaveBeenCalled();
+                expect(mediaQueries.action).toHaveBeenCalledWith(true);
             });
         });
     });

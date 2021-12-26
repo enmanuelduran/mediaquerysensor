@@ -30,9 +30,7 @@ function MediaQuerySensor(data = {}) {
     };
 
     const _mediaChangeHandler = (mediaQueryList, action) => () => {
-        if (mediaQueryList.matches) {
-            action();
-        }
+        action(mediaQueryList.matches);
     };
 
     const _bindMediaQueries = (mediaQueryList, ref) => {
